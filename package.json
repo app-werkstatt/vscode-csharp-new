@@ -1,5 +1,6 @@
 {
   "name": "csharp-new",
+  "publisher": "app-werkstatt",
   "displayName": "Create New C# Type",
   "description": "Add new C# types to your project",
   "version": "0.0.1",
@@ -10,16 +11,46 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:csharp-new.helloWorld"
+    "onCommand:csharp-new.insert-new-type",
+    "onCommand:csharp-new.create-new-type-file"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "csharp-new.helloWorld",
-        "title": "Hello World"
+        "command": "csharp-new.insert-new-type",
+        "title": "Insert new C# type…"
+      },
+      {
+        "command": "csharp-new.create-new-type-file",
+        "title": "New C# file…"
       }
-    ]
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "csharp-new.insert-new-type",
+          "when": "resourceLangId == csharp"
+        },
+        {
+          "command": "csharp-new.create-new-type-file"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "csharp-new.insert-new-type",
+          "group": "1_modification",
+          "when": "resourceLangId == csharp"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "csharp-new.create-new-type-file",
+          "group": "navigation",
+          "when": "explorerResourceIsFolder"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
