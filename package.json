@@ -11,41 +11,25 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:csharp-new.insert-new-type",
-    "onCommand:csharp-new.create-new-type-file"
+    "onCommand:csharp-new.new-file"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "csharp-new.insert-new-type",
-        "title": "Insert new C# type…"
-      },
-      {
-        "command": "csharp-new.create-new-type-file",
+        "command": "csharp-new.new-file",
         "title": "New C# file…"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "csharp-new.insert-new-type",
-          "when": "resourceLangId == csharp"
-        },
-        {
-          "command": "csharp-new.create-new-type-file"
-        }
-      ],
-      "editor/context": [
-        {
-          "command": "csharp-new.insert-new-type",
-          "group": "1_modification",
-          "when": "resourceLangId == csharp"
+          "command": "csharp-new.new-file"
         }
       ],
       "explorer/context": [
         {
-          "command": "csharp-new.create-new-type-file",
+          "command": "csharp-new.new-file",
           "group": "navigation",
           "when": "explorerResourceIsFolder"
         }
@@ -61,16 +45,21 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.71.0",
     "@types/glob": "^8.0.0",
     "@types/mocha": "^10.0.0",
     "@types/node": "16.x",
+    "@types/vscode": "^1.71.0",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
+    "@vscode/test-electron": "^2.1.5",
     "eslint": "^8.24.0",
+    "eslint-config-prettier": "^8.5.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
-    "typescript": "^4.8.4",
-    "@vscode/test-electron": "^2.1.5"
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "parsimmon": "^1.18.1"
   }
 }

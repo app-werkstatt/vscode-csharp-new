@@ -9,9 +9,15 @@ specifiers:
   '@typescript-eslint/parser': ^5.38.1
   '@vscode/test-electron': ^2.1.5
   eslint: ^8.24.0
+  eslint-config-prettier: ^8.5.0
   glob: ^8.0.3
   mocha: ^10.0.0
+  parsimmon: ^1.18.1
+  prettier: ^2.7.1
   typescript: ^4.8.4
+
+dependencies:
+  parsimmon: 1.18.1
 
 devDependencies:
   '@types/glob': 8.0.0
@@ -22,8 +28,10 @@ devDependencies:
   '@typescript-eslint/parser': 5.39.0_ypn2ylkkyfa5i233caldtndbqa
   '@vscode/test-electron': 2.1.5
   eslint: 8.24.0
+  eslint-config-prettier: 8.5.0_eslint@8.24.0
   glob: 8.0.3
   mocha: 10.0.0
+  prettier: 2.7.1
   typescript: 4.8.4
 
 packages:
@@ -535,6 +543,15 @@ packages:
   /escape-string-regexp/4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
+    dev: true
+
+  /eslint-config-prettier/8.5.0_eslint@8.24.0:
+    resolution: {integrity: sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==}
+    hasBin: true
+    peerDependencies:
+      eslint: '>=7.0.0'
+    dependencies:
+      eslint: 8.24.0
     dev: true
 
   /eslint-scope/5.1.1:
@@ -1127,6 +1144,10 @@ packages:
       callsites: 3.1.0
     dev: true
 
+  /parsimmon/1.18.1:
+    resolution: {integrity: sha512-u7p959wLfGAhJpSDJVYXoyMCXWYwHia78HhRBWqk7AIbxdmlrfdp5wX0l3xv/iTSH5HvhN9K7o26hwwpgS5Nmw==}
+    dev: false
+
   /path-exists/4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
     engines: {node: '>=8'}
@@ -1155,6 +1176,12 @@ packages:
   /prelude-ls/1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
+    dev: true
+
+  /prettier/2.7.1:
+    resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
     dev: true
 
   /process-nextick-args/2.0.1:
