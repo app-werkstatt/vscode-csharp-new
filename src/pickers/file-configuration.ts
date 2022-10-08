@@ -26,13 +26,13 @@ export interface NewFileConfiguration {
 async function pickTypeKindStep(
     input: MultiStepInput
 ): Promise<{ typeKind: string }> {
-    const typeKind = await input.showQuickPick([
-        "class",
-        "record",
-        "interface",
-        "struct",
-        "record struct",
-        "enum",
+    const { label: typeKind } = await input.showQuickPick([
+        { label: "class" },
+        { label: "record" },
+        { label: "interface" },
+        { label: "struct" },
+        { label: "record struct" },
+        { label: "enum" },
     ]);
     return { typeKind };
 }
