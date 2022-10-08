@@ -1,4 +1,10 @@
-import { InputBoxOptions, QuickPickOptions } from "vscode";
+import {
+    InputBoxOptions,
+    QuickPickOptions,
+    SaveDialogOptions,
+    Uri,
+    window,
+} from "vscode";
 
 export class MultiStepInput {
     public static from<TIn>(input: TIn): MultiStepInputBuilder<TIn, TIn> {
@@ -6,14 +12,33 @@ export class MultiStepInput {
     }
 
     public async showInputBox(options?: InputBoxOptions): Promise<string> {
-        throw "Not implemented";
+        const result = await window.showInputBox(options);
+        if (result === undefined) {
+            throw FlowAction.aborted;
+        }
+
+        return result;
     }
 
     public async showQuickPick(
         items: readonly string[] | Thenable<readonly string[]>,
         options?: QuickPickOptions
     ): Promise<string> {
-        throw "Not implemented";
+        const result = await window.showQuickPick(items, options);
+        if (result === undefined) {
+            throw FlowAction.aborted;
+        }
+
+        return result;
+    }
+
+    public async showSaveDialog(options?: SaveDialogOptions): Promise<Uri> {
+        const result = await window.showSaveDialog(options);
+        if (result === undefined) {
+            throw FlowAction.aborted;
+        }
+
+        return result;
     }
 }
 
@@ -86,4 +111,9 @@ class MultiStepRunner<TStart, TEnd> {
 interface InputStep {
     condition: ((state: unknown) => Promise<boolean>) | undefined;
     run: (input: MultiStepInput, values: unknown) => Promise<unknown>;
+}
+
+class FlowAction {
+    static aborted = new FlowAction();
+    static back = new FlowAction();
 }
