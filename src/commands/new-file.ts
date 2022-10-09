@@ -15,6 +15,8 @@ export async function newFile(uri: vscode.Uri) {
     const document = await vscode.workspace.openTextDocument(config.fileUri);
     const editor = await vscode.window.showTextDocument(document);
 
+    console.log("Add namespace", config.namespace);
+
     const snippet = new vscode.SnippetString()
         .appendChoice(["public", "internal"])
         .appendText(` ${config.typeKind} ${config.typeName} {\n\t`)
