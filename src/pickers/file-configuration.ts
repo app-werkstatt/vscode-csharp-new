@@ -21,10 +21,10 @@ export async function pickFileConfiguration(
 }
 
 export interface NewFileConfiguration {
-    fileUri: vscode.Uri;
-    typeKind: string;
-    typeName: string;
-    namespace: string | undefined;
+    readonly fileUri: vscode.Uri;
+    readonly typeKind: string;
+    readonly typeName: string;
+    readonly namespace: string | undefined;
 }
 
 async function determineNamespace(

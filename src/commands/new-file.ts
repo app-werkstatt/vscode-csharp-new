@@ -17,11 +17,18 @@ export async function newFile(uri: vscode.Uri) {
 
     console.log("Add namespace", config.namespace);
 
-    const snippet = new vscode.SnippetString()
+    let snippet = new vscode.SnippetString();
+
+    if (config.namespace) {
+        snippet.appendLine(`namespace ${config.namespace};`).appendLine();
+    }
+
+    snippet = snippet
         .appendChoice(["public", "internal"])
-        .appendText(` ${config.typeKind} ${config.typeName} {\n\t`)
-        .appendTabstop()
-        .appendText("\n}");
+        .appendLine(` ${config.typeKind} ${config.typeName} {`)
+        .appendText("\n\t")
+        .appendTabstop(0)
+        .appendLine("\n}");
 
     editor.insertSnippet(snippet);
 }
