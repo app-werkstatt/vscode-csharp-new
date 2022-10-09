@@ -7,13 +7,20 @@ export async function pickFileConfiguration(
 ): Promise<NewFileConfiguration | undefined> {
     const input = {
         folderUri,
-        namespace: undefined,
     };
 
-    return await MultiStepInput.from(input)
+    const namespacePromise = determineNamespace(folderUri);
+
+    const gatheredInfo = await MultiStepInput.from(input)
         .addStep(pickTypeKindStep)
         .addStep(pickTypeNameStep)
         .run();
+
+    if (gatheredInfo === undefined) {
+        return undefined;
+    }
+
+    return { ...gatheredInfo, namespace: await namespacePromise };
 }
 
 export interface NewFileConfiguration {
@@ -21,6 +28,35 @@ export interface NewFileConfiguration {
     typeKind: string;
     typeName: string;
     namespace: string | undefined;
+}
+
+async function determineNamespace(
+    folderUri: vscode.Uri
+): Promise<string | undefined> {
+    const baseFolder = vscode.workspace.getWorkspaceFolder(folderUri)?.uri;
+    if (baseFolder === undefined) {
+        return undefined;
+    }
+
+    let currentFolder = folderUri;
+
+    console.log("Base folder", baseFolder.toString());
+
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+        console.log("Current folder", currentFolder.toString());
+
+        if (
+            currentFolder.path === baseFolder.path ||
+            currentFolder.path === "/"
+        ) {
+            break;
+        }
+
+        currentFolder = vscode.Uri.joinPath(currentFolder, "..");
+    }
+
+    return undefined;
 }
 
 async function pickTypeKindStep(
