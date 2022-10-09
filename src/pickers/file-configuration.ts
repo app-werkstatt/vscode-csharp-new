@@ -1,9 +1,9 @@
-import { Uri } from "vscode";
+import * as vscode from "vscode";
 import { fileExists } from "../util/fs";
 import { MultiStepInput } from "../util/multi-step-input";
 
 export async function pickFileConfiguration(
-    folderUri: Uri
+    folderUri: vscode.Uri
 ): Promise<NewFileConfiguration | undefined> {
     const input = {
         folderUri,
@@ -17,7 +17,7 @@ export async function pickFileConfiguration(
 }
 
 export interface NewFileConfiguration {
-    fileUri: Uri;
+    fileUri: vscode.Uri;
     typeKind: string;
     typeName: string;
     namespace: string | undefined;
@@ -26,26 +26,32 @@ export interface NewFileConfiguration {
 async function pickTypeKindStep(
     input: MultiStepInput
 ): Promise<{ typeKind: string }> {
-    const { label: typeKind } = await input.showQuickPick([
-        { label: "class" },
-        { label: "record" },
-        { label: "interface" },
-        { label: "struct" },
-        { label: "record struct" },
-        { label: "enum" },
-    ]);
+    const { label: typeKind } = await input.showQuickPick(
+        [
+            { label: "class" },
+            { label: "record" },
+            { label: "interface" },
+            { label: "struct" },
+            { label: "record struct" },
+            { label: "enum" },
+        ],
+        { title: "Select type kind" }
+    );
     return { typeKind };
 }
 
 async function pickTypeNameStep(
     input: MultiStepInput,
-    values: { folderUri: Uri }
-): Promise<{ typeName: string; fileUri: Uri }> {
-    const typeName = await input.showInputBox();
-    let fileUri = Uri.joinPath(values.folderUri, `${typeName}.cs`);
+    values: { folderUri: vscode.Uri }
+): Promise<{ typeName: string; fileUri: vscode.Uri }> {
+    const typeName = await input.showInputBox({ title: "Enter type name" });
+    let fileUri = vscode.Uri.joinPath(values.folderUri, `${typeName}.cs`);
 
     if (await fileExists(fileUri)) {
-        fileUri = await input.showSaveDialog();
+        fileUri = await input.showSaveDialog({
+            title: "Create new file",
+            defaultUri: fileUri,
+        });
     }
 
     return { typeName, fileUri };

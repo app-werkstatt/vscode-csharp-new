@@ -1,7 +1,7 @@
-import { SnippetString, Uri, window, workspace } from "vscode";
+import * as vscode from "vscode";
 import { pickFileConfiguration } from "../pickers/file-configuration";
 
-export async function newFile(uri: Uri) {
+export async function newFile(uri: vscode.Uri) {
     console.log("Create new type file...", uri.toString());
 
     const config = await pickFileConfiguration(uri);
@@ -10,12 +10,12 @@ export async function newFile(uri: Uri) {
         return;
     }
 
-    await workspace.fs.writeFile(config.fileUri, new Uint8Array());
+    await vscode.workspace.fs.writeFile(config.fileUri, new Uint8Array());
 
-    const document = await workspace.openTextDocument(config.fileUri);
-    const editor = await window.showTextDocument(document);
+    const document = await vscode.workspace.openTextDocument(config.fileUri);
+    const editor = await vscode.window.showTextDocument(document);
 
-    const snippet = new SnippetString()
+    const snippet = new vscode.SnippetString()
         .appendChoice(["public", "internal"])
         .appendText(` ${config.typeKind} ${config.typeName} {\n\t`)
         .appendTabstop()

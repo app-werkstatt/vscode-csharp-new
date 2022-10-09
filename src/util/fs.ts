@@ -1,11 +1,11 @@
-import { FileSystemError, Uri, workspace } from "vscode";
+import * as vscode from "vscode";
 
-export async function fileExists(uri: Uri): Promise<boolean> {
+export async function fileExists(uri: vscode.Uri): Promise<boolean> {
     try {
-        await workspace.fs.stat(uri);
+        await vscode.workspace.fs.stat(uri);
         return true; // if we reach here, the file exists
     } catch (e) {
-        if (e instanceof FileSystemError && e.code === "FileNotFound") {
+        if (e instanceof vscode.FileSystemError && e.code === "FileNotFound") {
             return false; // file was not found
         } else {
             return true; // some other error

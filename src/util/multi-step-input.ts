@@ -1,25 +1,18 @@
-import {
-    Disposable,
-    InputBoxOptions,
-    QuickInputButtons,
-    QuickPickItem,
-    QuickPickOptions,
-    SaveDialogOptions,
-    Uri,
-    window,
-} from "vscode";
+import * as vscode from "vscode";
 
 export class MultiStepInput {
     public static from<TIn>(input: TIn): MultiStepInputBuilder<TIn, TIn> {
         return new MultiStepInputBuilder(new MultiStepInput(), input, []);
     }
 
-    public async showInputBox(options?: InputBoxOptions): Promise<string> {
-        const disposables: Disposable[] = [];
+    public async showInputBox(
+        options?: vscode.InputBoxOptions
+    ): Promise<string> {
+        const disposables: vscode.Disposable[] = [];
 
         try {
             return await new Promise((resolve, reject) => {
-                const inputBox = window.createInputBox();
+                const inputBox = vscode.window.createInputBox();
                 inputBox.step = this.state.step;
                 inputBox.totalSteps = this.state.totalSteps;
 
@@ -32,7 +25,7 @@ export class MultiStepInput {
                 inputBox.ignoreFocusOut = options?.ignoreFocusOut ?? false;
 
                 if (this.state.step > 1) {
-                    inputBox.buttons = [QuickInputButtons.Back];
+                    inputBox.buttons = [vscode.QuickInputButtons.Back];
                 }
 
                 disposables.push(
@@ -43,7 +36,7 @@ export class MultiStepInput {
                         reject(FlowAction.cancel);
                     }),
                     inputBox.onDidTriggerButton((button) => {
-                        if (button === QuickInputButtons.Back) {
+                        if (button === vscode.QuickInputButtons.Back) {
                             reject(FlowAction.back);
                         }
                     })
@@ -56,19 +49,19 @@ export class MultiStepInput {
         }
     }
 
-    public async showQuickPick<T extends QuickPickItem>(
+    public async showQuickPick<T extends vscode.QuickPickItem>(
         items: readonly T[] | Thenable<readonly T[]>,
-        options?: QuickPickOptions
+        options?: vscode.QuickPickOptions
     ): Promise<T> {
         const loadedItems = Array.isArray(items)
             ? (items as readonly T[])
             : await (items as Thenable<readonly T[]>);
 
-        const disposables: Disposable[] = [];
+        const disposables: vscode.Disposable[] = [];
 
         try {
             return await new Promise((resolve, reject) => {
-                const quickPick = window.createQuickPick<T>();
+                const quickPick = vscode.window.createQuickPick<T>();
                 quickPick.step = this.state.step;
                 quickPick.totalSteps = this.state.totalSteps;
 
@@ -81,7 +74,7 @@ export class MultiStepInput {
                 quickPick.ignoreFocusOut = options?.ignoreFocusOut ?? false;
 
                 if (this.state.step > 1) {
-                    quickPick.buttons = [QuickInputButtons.Back];
+                    quickPick.buttons = [vscode.QuickInputButtons.Back];
                 }
 
                 disposables.push(
@@ -92,7 +85,7 @@ export class MultiStepInput {
                         reject(FlowAction.cancel);
                     }),
                     quickPick.onDidTriggerButton((button) => {
-                        if (button === QuickInputButtons.Back) {
+                        if (button === vscode.QuickInputButtons.Back) {
                             reject(FlowAction.back);
                         }
                     })
@@ -105,8 +98,10 @@ export class MultiStepInput {
         }
     }
 
-    public async showSaveDialog(options?: SaveDialogOptions): Promise<Uri> {
-        const result = await window.showSaveDialog(options);
+    public async showSaveDialog(
+        options?: vscode.SaveDialogOptions
+    ): Promise<vscode.Uri> {
+        const result = await vscode.window.showSaveDialog(options);
         if (result === undefined) {
             throw FlowAction.cancel;
         }
