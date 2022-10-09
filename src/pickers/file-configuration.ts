@@ -78,14 +78,18 @@ async function determineNamespaceFromProject(
 async function pickTypeKindStep(
     input: MultiStepInput
 ): Promise<{ typeKind: string }> {
-    const { label: typeKind } = await input.showQuickPick(
+    const { label: typeKind } = await input.showQuickPick<vscode.QuickPickItem>(
         [
-            { label: "class" },
-            { label: "record" },
-            { label: "interface" },
-            { label: "struct" },
-            { label: "record struct" },
-            { label: "enum" },
+            { label: "class", detail: "Create a new class" },
+            { label: "record", detail: "Create a new record" },
+            { label: "interface", detail: "Create a new interface" },
+            { label: "struct", detail: "Create a new struct" },
+            { label: "record struct", detail: "Create a new record struct" },
+            { label: "enum", detail: "Create a new enumeration" },
+            {
+                label: "[Flags] enum",
+                detail: "Create a new numeration representing a set of flags",
+            },
         ],
         { title: "Select type kind" }
     );
