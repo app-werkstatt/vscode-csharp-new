@@ -1,12 +1,13 @@
-import path = require("path");
 import * as vscode from "vscode";
 import { fileExists } from "../util/fs";
 import { MultiStepInput } from "../util/multi-step-input";
+import { resolveNamespace } from "../util/namespace";
+import { readSettings } from "../util/settings";
 
 export async function pickFileConfiguration(
     folderUri: vscode.Uri
 ): Promise<NewFileConfiguration | undefined> {
-    const namespacePromise = determineNamespace(folderUri);
+    const namespacePromise = readNamespace(folderUri);
 
     const gatheredInfo = await MultiStepInput.from({ folderUri })
         .addStep(pickTypeKindStep)
@@ -25,54 +26,6 @@ export interface NewFileConfiguration {
     readonly typeKind: string;
     readonly typeName: string;
     readonly namespace: string | undefined;
-}
-
-async function determineNamespace(
-    folderUri: vscode.Uri
-): Promise<string | undefined> {
-    const baseFolder = vscode.workspace.getWorkspaceFolder(folderUri)?.uri;
-    if (baseFolder === undefined) {
-        return undefined;
-    }
-
-    let currentFolder = folderUri;
-
-    console.log("Base folder", baseFolder.toString());
-
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-        console.log("Current folder", currentFolder.toString());
-        const folderContents = await vscode.workspace.fs.readDirectory(
-            currentFolder
-        );
-
-        for (const [name, type] of folderContents) {
-            if (name.endsWith(".csproj") && type === vscode.FileType.File) {
-                const csprojUri = vscode.Uri.joinPath(currentFolder, name);
-
-                console.log("Found csproj", csprojUri.toString());
-
-                return determineNamespaceFromProject(csprojUri);
-            }
-        }
-
-        if (
-            currentFolder.path === baseFolder.path ||
-            currentFolder.path === "/"
-        ) {
-            break;
-        }
-
-        currentFolder = vscode.Uri.joinPath(currentFolder, "..");
-    }
-
-    return undefined;
-}
-
-async function determineNamespaceFromProject(
-    csprojUri: vscode.Uri
-): Promise<string | undefined> {
-    return path.basename(csprojUri.path, ".csproj");
 }
 
 async function pickTypeKindStep(
@@ -111,4 +64,13 @@ async function pickTypeNameStep(
     }
 
     return { typeName, fileUri };
+}
+
+async function readNamespace(
+    folderUri: vscode.Uri
+): Promise<string | undefined> {
+    const settings = await readSettings(folderUri);
+    const namespace = await resolveNamespace(folderUri, settings);
+
+    return namespace;
 }
