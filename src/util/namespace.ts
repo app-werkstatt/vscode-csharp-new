@@ -40,7 +40,9 @@ export async function resolveNamespace(
         currentFolder = vscode.Uri.joinPath(currentFolder, "..");
     }
 
-    return rootNamespace.name + "." + childNamespaces.reverse().join(".");
+    return childNamespaces.length > 0
+        ? rootNamespace.name + "." + childNamespaces.reverse().join(".")
+        : rootNamespace.name;
 }
 
 async function determineRootNamespaceFromProjects(

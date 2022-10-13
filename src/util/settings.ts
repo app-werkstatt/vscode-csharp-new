@@ -33,15 +33,20 @@ export async function readSettings(folderUri: vscode.Uri): Promise<Settings> {
 async function readSettingsFile(
     fileUri: vscode.Uri
 ): Promise<SettingsFile | undefined> {
-    const dataBuffer = await vscode.workspace.fs.readFile(fileUri);
-    const data = JSON.parse(new TextDecoder().decode(dataBuffer));
+    try {
+        const dataBuffer = await vscode.workspace.fs.readFile(fileUri);
+        const data = JSON.parse(new TextDecoder().decode(dataBuffer));
 
-    const rootNamespace = data.rootNamespace as string | undefined;
-    const namespaceFollowsFolders = data.namespaceFollowsFolders as
-        | boolean
-        | undefined;
+        const rootNamespace = data.rootNamespace as string | undefined;
+        const namespaceFollowsFolders = data.namespaceFollowsFolders as
+            | boolean
+            | undefined;
 
-    return { rootNamespace, namespaceFollowsFolders };
+        return { rootNamespace, namespaceFollowsFolders };
+    } catch (e) {
+        console.error("Error reading settings file", fileUri.toString(), e);
+        return undefined;
+    }
 }
 
 function applySettings(

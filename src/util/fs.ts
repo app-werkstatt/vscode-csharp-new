@@ -76,5 +76,5 @@ export async function findMatchingFilesUp(
         currentFolder = vscode.Uri.joinPath(currentFolder, "..");
     }
 
-    return singleResult ? undefined : [];
+    return singleResult ? undefined : multipleResults;
 }

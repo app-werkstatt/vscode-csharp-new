@@ -2,8 +2,6 @@ import * as vscode from "vscode";
 import { pickFileConfiguration } from "../pickers/file-configuration";
 
 export async function newFile(uri: vscode.Uri) {
-    console.log("Create new type file...", uri.toString());
-
     const config = await pickFileConfiguration(uri);
     if (!config) {
         console.info("Create new file aborted");
@@ -14,8 +12,6 @@ export async function newFile(uri: vscode.Uri) {
 
     const document = await vscode.workspace.openTextDocument(config.fileUri);
     const editor = await vscode.window.showTextDocument(document);
-
-    console.log("Add namespace", config.namespace);
 
     let snippet = new vscode.SnippetString();
 
