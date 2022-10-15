@@ -1,65 +1,69 @@
 {
-  "name": "csharp-new",
-  "publisher": "app-werkstatt",
-  "displayName": "Create New C# Type",
-  "description": "Add new C# types to your project",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.71.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onCommand:csharp-new.new-file"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "csharp-new.new-file",
-        "title": "New C# file…"
-      }
+    "name": "csharp-new",
+    "publisher": "app-werkstatt",
+    "displayName": "Create New C# Type",
+    "description": "Add new C# types to your project",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/app-werkstatt/vscode-csharp-new.git"
+    },
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.71.0"
+    },
+    "categories": [
+        "Other"
     ],
-    "menus": {
-      "commandPalette": [
-        {
-          "command": "csharp-new.new-file"
+    "activationEvents": [
+        "onCommand:csharp-new.new-file"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "csharp-new.new-file",
+                "title": "New C# file…"
+            }
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "csharp-new.new-file"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "command": "csharp-new.new-file",
+                    "group": "navigation",
+                    "when": "explorerResourceIsFolder"
+                }
+            ]
         }
-      ],
-      "explorer/context": [
-        {
-          "command": "csharp-new.new-file",
-          "group": "navigation",
-          "when": "explorerResourceIsFolder"
-        }
-      ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^8.0.0",
+        "@types/mocha": "^10.0.0",
+        "@types/node": "16.x",
+        "@types/vscode": "^1.71.0",
+        "@typescript-eslint/eslint-plugin": "^5.38.1",
+        "@typescript-eslint/parser": "^5.38.1",
+        "@vscode/test-electron": "^2.1.5",
+        "eslint": "^8.24.0",
+        "eslint-config-prettier": "^8.5.0",
+        "glob": "^8.0.3",
+        "mocha": "^10.0.0",
+        "prettier": "^2.7.1",
+        "typescript": "^4.8.4"
+    },
+    "dependencies": {
+        "parsimmon": "^1.18.1"
     }
-  },
-  "scripts": {
-    "vscode:prepublish": "pnpm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "pnpm run compile && pnpm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
-  },
-  "devDependencies": {
-    "@types/glob": "^8.0.0",
-    "@types/mocha": "^10.0.0",
-    "@types/node": "16.x",
-    "@types/vscode": "^1.71.0",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
-    "@vscode/test-electron": "^2.1.5",
-    "eslint": "^8.24.0",
-    "eslint-config-prettier": "^8.5.0",
-    "glob": "^8.0.3",
-    "mocha": "^10.0.0",
-    "prettier": "^2.7.1",
-    "typescript": "^4.8.4"
-  },
-  "dependencies": {
-    "parsimmon": "^1.18.1"
-  }
 }
