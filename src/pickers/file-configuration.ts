@@ -18,14 +18,32 @@ export async function pickFileConfiguration(
         return undefined;
     }
 
-    return { ...gatheredInfo, namespace: await namespacePromise };
+    const fileUri = gatheredInfo.fileUri;
+    const type = buildTypeDeclaration(
+        gatheredInfo.typeKind,
+        gatheredInfo.typeName
+    );
+    const namespace = await namespacePromise;
+
+    return { fileUri, type, namespace };
 }
 
 export interface NewFileConfiguration {
     readonly fileUri: vscode.Uri;
-    readonly typeKind: string;
-    readonly typeName: string;
-    readonly namespace: string | undefined;
+    readonly type: TypeDeclaration;
+    readonly namespace: Namespace | undefined;
+}
+
+export interface TypeDeclaration {
+    readonly keyword: string;
+    readonly name: string;
+    readonly attributes: string[];
+    readonly style: "block" | "primary";
+}
+
+export interface Namespace {
+    readonly name: string;
+    readonly scope: "block" | "file";
 }
 
 async function pickTypeKindStep(
@@ -68,9 +86,34 @@ async function pickTypeNameStep(
 
 async function readNamespace(
     folderUri: vscode.Uri
-): Promise<string | undefined> {
+): Promise<Namespace | undefined> {
     const settings = await readSettings(folderUri);
     const namespace = await resolveNamespace(folderUri, settings);
 
-    return namespace;
+    if (namespace === undefined) {
+        return undefined;
+    }
+
+    return { name: namespace, scope: settings.namespaceScope };
+}
+
+function buildTypeDeclaration(
+    typeKind: string,
+    typeName: string
+): TypeDeclaration {
+    const name = typeName;
+    let keyword: string = typeKind;
+    let attributes: string[] = [];
+    let style: "block" | "primary" = "block";
+
+    if (typeKind === "record" || typeKind === "record struct") {
+        style = "primary";
+    }
+
+    if (typeKind === "[Flags] enum") {
+        keyword = "enum";
+        attributes = ["Flags"];
+    }
+
+    return { keyword, name, attributes, style };
 }

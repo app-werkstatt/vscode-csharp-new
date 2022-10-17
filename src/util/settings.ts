@@ -6,11 +6,13 @@ import { RootNamespace } from "./namespace";
 export interface Settings {
     readonly rootNamespace: RootNamespace | undefined;
     readonly namespaceFollowsFolders: boolean;
+    readonly namespaceScope: "file" | "block";
 }
 
 interface SettingsFile {
     readonly rootNamespace: string | undefined;
     readonly namespaceFollowsFolders: boolean | undefined;
+    readonly namespaceScope: "file" | "block" | undefined;
 }
 
 export async function readSettings(folderUri: vscode.Uri): Promise<Settings> {
@@ -19,6 +21,7 @@ export async function readSettings(folderUri: vscode.Uri): Promise<Settings> {
     let settings: Settings = {
         rootNamespace: undefined,
         namespaceFollowsFolders: true,
+        namespaceScope: "file",
     };
 
     let fileUri: vscode.Uri | undefined;
@@ -37,16 +40,40 @@ async function readSettingsFile(
         const dataBuffer = await vscode.workspace.fs.readFile(fileUri);
         const data = JSON.parse(new TextDecoder().decode(dataBuffer));
 
-        const rootNamespace = data.rootNamespace as string | undefined;
-        const namespaceFollowsFolders = data.namespaceFollowsFolders as
-            | boolean
-            | undefined;
+        const rootNamespace = readAsString(data.rootNamespace);
+        const namespaceFollowsFolders = readAsBoolean(
+            data.namespaceFollowsFolders
+        );
+        const namespaceScopeRaw = readAsString(
+            data.namespaceScope
+        )?.toLowerCase();
 
-        return { rootNamespace, namespaceFollowsFolders };
+        const namespaceScope: "file" | "block" | undefined =
+            namespaceScopeRaw === "file" || namespaceScopeRaw === "block"
+                ? namespaceScopeRaw
+                : undefined;
+
+        return { rootNamespace, namespaceFollowsFolders, namespaceScope };
     } catch (e) {
         console.error("Error reading settings file", fileUri.toString(), e);
         return undefined;
     }
+}
+
+function readAsString(value: unknown): string | undefined {
+    if (value === null || value === undefined) {
+        return undefined;
+    }
+
+    return typeof value === "string" ? value : undefined;
+}
+
+function readAsBoolean(value: unknown): boolean | undefined {
+    if (value === null || value === undefined) {
+        return undefined;
+    }
+
+    return typeof value === "boolean" ? value : undefined;
 }
 
 function applySettings(
@@ -76,6 +103,13 @@ function applySettings(
         newSettings = {
             ...newSettings,
             namespaceFollowsFolders: settingsFile.namespaceFollowsFolders,
+        };
+    }
+
+    if (settingsFile.namespaceScope !== undefined) {
+        newSettings = {
+            ...newSettings,
+            namespaceScope: settingsFile.namespaceScope,
         };
     }
 
