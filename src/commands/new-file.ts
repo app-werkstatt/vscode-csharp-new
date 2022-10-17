@@ -66,7 +66,9 @@ function writeTypeDeclaration(writer: SnippetWriter, type: TypeDeclaration) {
             .appendLineBreak();
     } else {
         writer.appendText(" {").appendLineBreak().appendLineBreak();
+        writer.increaseIndentation();
         writer.appendTabstop(0).appendLineBreak();
+        writer.decreaseIndentation();
         writer.appendText("}").appendLineBreak();
     }
 }
