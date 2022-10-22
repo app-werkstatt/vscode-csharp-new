@@ -19,14 +19,21 @@ Namespace resolution:
 It reads the correct namespace from the project name or from a settings file.
 Supports both nested and flat namespaces.
 
+Generics in type name:
+
+You can enter type names with generics, which are excluded from the file name.
+
 ## Known issues
 
 Namespace reading from the &lt;RootNamespace&gt; csproj setting is not yet supported.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.2.0
 
-### 0.0.1
+-   Add support for generics in type names
+-   Show potential errors in type names
 
-Initial release.
+### 0.1.0
+
+-   Initial release
