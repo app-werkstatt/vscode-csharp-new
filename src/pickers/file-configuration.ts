@@ -3,6 +3,7 @@ import { fileExists } from "../util/fs";
 import { MultiStepInput } from "../util/multi-step-input";
 import { resolveNamespace } from "../util/namespace";
 import { readSettings } from "../util/settings";
+import { parseTypeName } from "../util/type-name";
 
 export async function pickFileConfiguration(
     folderUri: vscode.Uri
@@ -69,10 +70,22 @@ async function pickTypeKindStep(
 
 async function pickTypeNameStep(
     input: MultiStepInput,
-    values: { folderUri: vscode.Uri }
+    values: { folderUri: vscode.Uri; typeKind: string }
 ): Promise<{ typeName: string; fileUri: vscode.Uri }> {
-    const typeName = await input.showInputBox({ title: "Enter type name" });
-    let fileUri = vscode.Uri.joinPath(values.folderUri, `${typeName}.cs`);
+    const typeName = (
+        await input.showInputBox({
+            title: "Enter type name",
+            validateInput: (current) =>
+                validateTypeName(current, values.typeKind),
+        })
+    ).trim();
+
+    const parseResult = parseTypeName(typeName);
+    const fileName = parseResult.success
+        ? parseResult.result.identifier
+        : typeName;
+
+    let fileUri = vscode.Uri.joinPath(values.folderUri, `${fileName}.cs`);
 
     if (await fileExists(fileUri)) {
         fileUri = await input.showSaveDialog({
@@ -116,4 +129,45 @@ function buildTypeDeclaration(
     }
 
     return { keyword, name, attributes, style };
+}
+
+function validateTypeName(
+    typeName: string,
+    typeKind: string
+): vscode.InputBoxValidationMessage | undefined {
+    if (typeName.trim().length === 0) {
+        return {
+            severity: vscode.InputBoxValidationSeverity.Error,
+            message: "Type name cannot be empty",
+        };
+    }
+
+    const result = parseTypeName(typeName);
+    if (result.success === false) {
+        return {
+            severity: vscode.InputBoxValidationSeverity.Warning,
+            message: `Invalid type name: ${result.error}`,
+        };
+    }
+
+    const { identifier, typeParams } = result.result;
+
+    if (
+        (typeKind === "enum" || typeKind === "[Flags] enum") &&
+        typeParams.length > 0
+    ) {
+        return {
+            severity: vscode.InputBoxValidationSeverity.Warning,
+            message: `Enumeration types cannot have generic type parameters`,
+        };
+    }
+
+    if (typeParams.length > 0) {
+        return {
+            severity: vscode.InputBoxValidationSeverity.Info,
+            message: `File name: ${identifier}.cs`,
+        };
+    }
+
+    return undefined;
 }

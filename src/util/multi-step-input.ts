@@ -39,6 +39,11 @@ export class MultiStepInput {
                         if (button === vscode.QuickInputButtons.Back) {
                             reject(FlowAction.back);
                         }
+                    }),
+                    inputBox.onDidChangeValue(async (newValue) => {
+                        inputBox.validationMessage =
+                            (await options?.validateInput?.(newValue)) ??
+                            undefined;
                     })
                 );
 
