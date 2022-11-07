@@ -42,7 +42,7 @@ function writeNamespace(
         writer.appendText(";").appendLineBreak().appendLineBreak();
         content(writer);
     } else {
-        writer.appendText(" {").appendLineBreak().appendLineBreak();
+        writer.appendLineBreak().appendText("{").appendLineBreak();
         writer.increaseIndentation();
         content(writer);
         writer.decreaseIndentation();
@@ -65,7 +65,7 @@ function writeTypeDeclaration(writer: SnippetWriter, type: TypeDeclaration) {
             .appendText(");")
             .appendLineBreak();
     } else {
-        writer.appendText(" {").appendLineBreak().appendLineBreak();
+        writer.appendLineBreak().appendText("{").appendLineBreak();
         writer.increaseIndentation();
         writer.appendTabstop(0).appendLineBreak();
         writer.decreaseIndentation();

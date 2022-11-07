@@ -16,7 +16,7 @@ Supported types:
 
 Namespace resolution:
 
-It reads the correct namespace from the project name or from a settings file.
+It reads the namespace from the project name or from a settings file.
 Supports both nested and flat namespaces.
 
 Generics in type name:
@@ -28,6 +28,10 @@ You can enter type names with generics, which are excluded from the file name.
 Namespace reading from the &lt;RootNamespace&gt; csproj setting is not yet supported.
 
 ## Release Notes
+
+### 0.2.1
+
+-   Use correct C# brace placement rules
 
 ### 0.2.0
 
